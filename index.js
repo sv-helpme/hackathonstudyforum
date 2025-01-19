@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const fs = require('fs');
 const path = require('path');
 
 const app = express();
@@ -8,57 +9,89 @@ const port = 3000;
 // Set up storage configuration for multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Specify the uploads folder
+        // Extract the subject from the referer header (e.g., "math", "chem")
+        const referer = req.headers.referer || '';
+        const subject = referer.split('/').pop().split('.')[0]; // Get the filename without extension
+        const uploadDir = `uploads/${subject}`;
+        
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true }); // Create directory if it doesn't exist
+        }
+        cb(null, uploadDir); // Save files in the correct subject folder
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Save file with a unique name
+        cb(null, file.originalname); // Preserve original file name
     }
 });
+
 
 const upload = multer({ storage: storage });
 
-// Serve an HTML form for file upload
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+// Serve static files from the "public" folder
+app.use(express.static('public'));
 
-// Handle multiple file uploads
-app.post('/upload', upload.array('uploadedFiles', 10), (req, res) => { // Allow up to 10 files
-    if (req.files && req.files.length > 0) {
-        const uploadedFileNames = req.files.map(file => file.filename);
-        res.send(`Files uploaded successfully: ${uploadedFileNames.join(', ')}`);
-    } else {
-        res.status(400).send('No files uploaded.');
-    }
-});
+// Serve uploaded files from the "uploads" folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Ensure the uploads folder exists
-const fs = require('fs');
+// Ensure the main uploads folder exists
 const uploadDir = 'uploads';
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
 }
 
+// Serve the main HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/page1.html'));
+});
+
+// Handle file uploads from "anyth.html"
+app.post('/upload', upload.array('uploadedFiles', 10), (req, res) => {
+    if (req.files && req.files.length > 0) {
+        const referer = req.headers.referer || '';
+        const subject = referer.split('/').pop().split('.')[0]; // Extract subject (e.g., "math", "chem")
+        res.redirect(`/${subject}.html`); // Redirect to the appropriate subject page
+    } else {
+        res.status(400).send('No files uploaded.');
+    }
+});
+
+
+// List files in the "uploads" directory -- changed to no longer be for math
+app.get('/:subject/files', (req, res) => {
+    const subject = req.params.subject; // Extract subject from route
+    const directoryPath = `uploads/${subject}/`;
+    fs.readdir(directoryPath, (err, files) => {
+        if (err) {
+            res.status(500).send(`Unable to scan directory for ${subject}.`);
+        } else {
+            res.json(files); // Send the list of files as JSON
+        }
+    });
+});
+
+
+// List files in the "uploads/chem" directory
+app.get('/chem/files', (req, res) => {
+    const directoryPath = 'uploads/chem/';
+    fs.readdir(directoryPath, (err, files) => {
+        if (err) {
+            res.status(500).send('Unable to scan directory.');
+        } else {
+            res.json(files);
+        }
+    });
+});
+
+// Download a file
+app.get('/download/:filename', (req, res) => {
+    const filePath = path.join(uploadDir, 'math', req.params.filename);
+    if (fs.existsSync(filePath)) {
+        res.download(filePath);
+    } else {
+        res.status(404).send('File not found.');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
-
-// index.html
-const htmlContent = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
-</head>
-<body>
-    <h1>Upload Files</h1>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="uploadedFiles" multiple />
-        <button type="submit">Upload</button>
-    </form>
-</body>
-</html>
-`;
-fs.writeFileSync('index.html', htmlContent);
