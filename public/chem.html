@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chem Notes</title>
     <link rel="stylesheet" href="style.css"> 
-</head>
-<body>
-    <header> 
-        Chem Study Guide Links
-    </header>
+</head><body><header>Chem Study Guide Links</header>
     <div class="container"> 
         <h1>View Chem Notes</h1> 
         <!-- action: sends data to the url '/upload', method: uses POST, 
@@ -21,8 +17,7 @@
         </form>        
         <h2>Available Files</h2>
         <ul id="fileList"></ul> 
-    </div>
-    <script>
+    </div><script>
         async function getfiles() {
             const response = await fetch('/chem/files');
             const files = await response.json();
@@ -34,8 +29,5 @@
                 fileList.appendChild(listItem);
             });
         }
-        getfiles();
-    </script>
+        getfiles(); </script></body></html>
 
-</body>
-</html>
