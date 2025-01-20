@@ -1,64 +1,104 @@
-body {
-    font-family: Arial, sans-serif;
+/* the * is universal so it applies to everything. the default margins were causing a blank part peeking
+above the page, and resetting the margins made the header be at the very top of the page. */
+
+*{
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
+    box-sizing: border-box;
 }
 
-.container {
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+/* arranges items vertically, aligning them to the center */
 
-h1, h2 {
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+/* adds a purple header at the top, displaying 'course study guide links' */
+
+  header {
+    background-color: rgb(126, 1, 126);
+    color: white;
+    width: 100%;
+    padding:  2rem;
     text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+/* makes the background pink, aligns text in it to the center */
+
+  .container {
+    background: rgb(250, 188, 198);
+    padding: 1rem;
+    width: 100%;
+    min-height: 100vh; /*to extend the pink bg until the end of the page */
+    text-align: center;
+  }
+
+/* aligns headings to the center within their container */
+
+h1 {
+    text-align: center;
+    margin-top: 1rem; /* margin top & bottom makes the font spaced 1rem above the items above/below */
+    margin-bottom: 1rem;
+    color: rgb(124, 25, 163);
 }
+
+/* arranges items vertically, aligning them to the center within the container */
 
 form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+    align-items: center;
+  }
+
+/* adding padding, a border, and spacing for a margin to bring attention to the button */
 
 input[type="file"] {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 20px;
+    border: 3px solid rgb(40, 38, 38);
+    background: rgb(211, 111, 199);
+    margin: 1rem;
 }
+
+/* makes the 'upload' button black, the font white, changes size of font and the box's padding */
 
 button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #007BFF;
-    color: #fff;
-    cursor: pointer;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5px;
+    font-size: 1.5rem;
 }
+
+/* changes the box's color to grey when hovering on it */
 
 button:hover {
-    background-color: #0056b3;
+    background-color: grey;
 }
+
+/*makes circle bullet points for each link to a file uploaded */
 
 ul {
-    list-style-type: none;
-    padding: 0;
+    list-style-type: circle;
 }
+
+/* adds spacing between links in the list to make it cleaner */
 
 ul li {
-    margin: 10px 0;
+    margin: 10px;
 }
+
+/* makes the color of the links blue */
 
 ul li a {
-    color: #007BFF;
-    text-decoration: none;
+    color: blue;
 }
 
+/* makes the color of the links a different color when hovering */
+
 ul li a:hover {
-    text-decoration: underline;
+    color: rgb(85, 85, 236);
 }

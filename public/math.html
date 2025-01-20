@@ -16,8 +16,8 @@
         <h2>Available Files</h2>
         <ul id="fileList"></ul>
     </div>
-    <script>
-        async function fetchFiles() {
+    <script> //function to get the files
+        async function getfiles() {
             const response = await fetch('/math/files');
             const files = await response.json();
             const fileList = document.getElementById('fileList');
@@ -28,7 +28,7 @@
                 fileList.appendChild(listItem);
             });
         }
-        fetchFiles();
+        getfiles();
     </script>
 </body>
 </html>

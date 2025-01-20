@@ -1,76 +1,63 @@
+//getting modules
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 
+//setting up server thing
 const app = express();
 const port = 3000;
 
-// Set up storage configuration for multer
+// configure/sort files -- save them in correct folder
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Extract the subject from the referer header (e.g., "math", "chem")
         const referer = req.headers.referer || '';
-        const subject = referer.split('/').pop().split('.')[0]; // Get the filename without extension
+        const subject = referer.split('/').pop().split('.')[0]; 
         const uploadDir = `uploads/${subject}`;
         
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true }); // Create directory if it doesn't exist
-        }
-        cb(null, uploadDir); // Save files in the correct subject folder
+        cb(null, uploadDir); 
     },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname); // Preserve original file name
+    filename: (req, file, cb) => { //to keep file name same
+        cb(null, file.originalname); 
     }
 });
-
-
 const upload = multer({ storage: storage });
 
-// Serve static files from the "public" folder
+// makes "public" and "uploads" files available to ppl using server
 app.use(express.static('public'));
-
-// Serve uploaded files from the "uploads" folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Ensure the main uploads folder exists
-const uploadDir = 'uploads';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
-
-// Serve the main HTML file
+// first page when u get onto server
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/page1.html'));
 });
 
-// Handle file uploads from "anyth.html"
+// file uploads messaging
 app.post('/upload', upload.array('uploadedFiles', 10), (req, res) => {
     if (req.files && req.files.length > 0) {
         const referer = req.headers.referer || '';
-        const subject = referer.split('/').pop().split('.')[0]; // Extract subject (e.g., "math", "chem")
-        res.redirect(`/${subject}.html`); // Redirect to the appropriate subject page
+        const subject = referer.split('/').pop().split('.')[0]; 
+        res.redirect(`/${subject}.html`); // this part is sort of to keep u back on the same page as per subject (hence var subject line above)
     } else {
         res.status(400).send('No files uploaded.');
     }
 });
 
 
-// List files in the "uploads" directory -- changed to no longer be for math
-app.get('/:subject/files', (req, res) => {
-    const subject = req.params.subject; // Extract subject from route
-    const directoryPath = `uploads/${subject}/`;
+// get the file names for "uploads/math" directory in an array to list
+app.get('/math/files', (req, res) => {
+    const directoryPath = 'uploads/math/';
     fs.readdir(directoryPath, (err, files) => {
         if (err) {
-            res.status(500).send(`Unable to scan directory for ${subject}.`);
+            res.status(500).send('Unable to scan directory.');
         } else {
-            res.json(files); // Send the list of files as JSON
+            res.json(files);
         }
     });
 });
 
 
-// List files in the "uploads/chem" directory
+// same thing but for "uploads/chem"
 app.get('/chem/files', (req, res) => {
     const directoryPath = 'uploads/chem/';
     fs.readdir(directoryPath, (err, files) => {
@@ -82,7 +69,31 @@ app.get('/chem/files', (req, res) => {
     });
 });
 
-// Download a file
+// "uploads/econ"
+app.get('/econ/files', (req, res) => {
+    const directoryPath = 'uploads/econ/';
+    fs.readdir(directoryPath, (err, files) => {
+        if (err) {
+            res.status(500).send('Unable to scan directory.');
+        } else {
+            res.json(files);
+        }
+    });
+});
+
+// "uploads/eng"
+app.get('/eng/files', (req, res) => {
+    const directoryPath = 'uploads/eng/';
+    fs.readdir(directoryPath, (err, files) => {
+        if (err) {
+            res.status(500).send('Unable to scan directory.');
+        } else {
+            res.json(files);
+        }
+    });
+});
+
+// download files
 app.get('/download/:filename', (req, res) => {
     const filePath = path.join(uploadDir, 'math', req.params.filename);
     if (fs.existsSync(filePath)) {
@@ -93,5 +104,5 @@ app.get('/download/:filename', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`server running!!! <3 http://localhost:${port}`);
 });

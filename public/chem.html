@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chemistry Notes</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Chem Notes</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <div class="container">
-        <h1>View Chem Notes</h1>
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="uploadedFiles" multiple required />
-            <button type="submit">Upload</button>
+    <header> 
+        Chem Study Guide Links
+    </header>
+    <div class="container"> 
+        <h1>View Chem Notes</h1> 
+        <form action="/upload" method="POST" enctype="multipart/form-data"> 
+            <input type="file" name="uploadedFiles" multiple required /> 
+            <button type="submit">Upload</button> 
         </form>        
         <h2>Available Files</h2>
-        <ul id="fileList"></ul>
+        <ul id="fileList"></ul> 
     </div>
     <script>
-        async function fetchFiles() {
+        async function getfiles() {
             const response = await fetch('/chem/files');
             const files = await response.json();
             const fileList = document.getElementById('fileList');
@@ -28,7 +31,8 @@
                 fileList.appendChild(listItem);
             });
         }
-        fetchFiles();
+        getfiles();
     </script>
+
 </body>
 </html>
