@@ -103,6 +103,7 @@ app.get('/download/:filename', (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`server running!!! <3 http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`server running!!! <3 http://0.0.0.0:${port}`);
 });
+
