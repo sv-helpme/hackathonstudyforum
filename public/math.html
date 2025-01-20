@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Notes</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <div class="container">
-        <h1>View Math Notes</h1>
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="uploadedFiles" multiple required />
-            <button type="submit">Upload</button>
+    <header> 
+        Math Study Guide Links
+    </header>
+    <div class="container"> 
+        <h1>View Math Notes</h1> 
+        <form action="/upload" method="POST" enctype="multipart/form-data"> 
+            <input type="file" name="uploadedFiles" multiple required /> 
+            <button type="submit">Upload</button> 
         </form>        
         <h2>Available Files</h2>
-        <ul id="fileList"></ul>
+        <ul id="fileList"></ul> 
     </div>
-    <script> //function to get the files
+    <script>
         async function getfiles() {
             const response = await fetch('/math/files');
             const files = await response.json();
@@ -30,5 +34,6 @@
         }
         getfiles();
     </script>
+
 </body>
 </html>
