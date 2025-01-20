@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chem Notes</title>
@@ -13,9 +12,12 @@
     </header>
     <div class="container"> 
         <h1>View Chem Notes</h1> 
+        <!-- action: sends data to the url '/upload', method: uses POST, 
+         which is a request method so that a web server accepts the data and stores it.-->
         <form action="/upload" method="POST" enctype="multipart/form-data"> 
+            <!-- multiple allows users multiple files, required makes the form submit only when something's uploaded-->
             <input type="file" name="uploadedFiles" multiple required /> 
-            <button type="submit">Upload</button> 
+            <button type="submit">Upload</button> <!-- name of the button -->
         </form>        
         <h2>Available Files</h2>
         <ul id="fileList"></ul> 
